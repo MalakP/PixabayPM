@@ -60,19 +60,7 @@ fun DetailsScreen(viewModel: SharedViewModel, imgId: Long, onBackClick: () -> Un
 @Composable
 fun Content(img: PictureModel, onBackClick: () -> Unit) {
     Surface(modifier = Modifier.fillMaxSize()) {
-        Button(
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.teal_bg)),
-            onClick = { onBackClick() }, modifier = Modifier
-                .padding(all = 8.dp)
-                .wrapContentWidth(align = Alignment.Start)
-                .wrapContentHeight(align = Alignment.Top)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                tint = Color.Black,
-                contentDescription = "Back icon"
-            )
-        }
+
         val configuration = LocalConfiguration.current
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current).data(img.largeImageUrl)
@@ -87,6 +75,20 @@ fun Content(img: PictureModel, onBackClick: () -> Unit) {
             placeholder = painterResource(id = R.drawable.image_512),
             error = painterResource(id = R.drawable.baseline_broken_image_512)
         )
+
+        Button(
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.teal_bg)),
+            onClick = { onBackClick() }, modifier = Modifier
+                .padding(all = 8.dp)
+                .wrapContentWidth(align = Alignment.Start)
+                .wrapContentHeight(align = Alignment.Top)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                tint = Color.Black,
+                contentDescription = "Back icon"
+            )
+        }
 
         Column(
             modifier = Modifier
