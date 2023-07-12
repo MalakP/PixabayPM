@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PixabayPM</string>
+    <string name="likes_icon_content_description">Likes icon</string>
+    <string name="downloads_icon_content_description">Downloads icon</string>
+    <string name="comments_icon_content_description">Comments icon</string>
+    <string name="search_tooltip">Search</string>
+    <string name="error">Error</string>
+    <string name="ok">ok</string>
+    <string name="error_details">"Error details: "</string>
+</resources>
