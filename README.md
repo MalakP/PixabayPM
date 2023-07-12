@@ -14,7 +14,7 @@ Images are cached by the Coil library
 
 Libraries used:
 
-Android Compose,
+Android Jetpack,
 Hilt,
 Retrofit2,
 Coil, 
