@@ -5,6 +5,11 @@
     <string name="comments_icon_content_description">Comments icon</string>
     <string name="search_tooltip">Search</string>
     <string name="error">Error</string>
-    <string name="ok">ok</string>
     <string name="error_details">"Error details: "</string>
+    <string name="image_click_popup_title">Important question</string>
+    <string name="image_click_popup_message">Do you want to see the details of this picture?</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="tags_icon_content_description">Tags icon</string>
+    <string name="author_icon_content_description">Author icon</string>
 </resources>

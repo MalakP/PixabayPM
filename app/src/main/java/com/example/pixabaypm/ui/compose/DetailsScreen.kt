@@ -97,16 +97,23 @@ fun Content(img: PictureModel, onBackClick: () -> Unit) {
                 .padding(all = 10.dp)
         ) {
             Row(verticalAlignment = CenterVertically) {
-                Icon(imageVector = Icons.Default.Person, contentDescription = "Author icon")
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = stringResource(R.string.author_icon_content_description)
+                )
                 Text(
                     text = img.userName,
+                    modifier = Modifier.padding(all = 2.dp),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
 
             Spacer(modifier = Modifier.height(4.dp))
-            Row {
-                Icon(imageVector = Icons.Outlined.Tag, contentDescription = "Tags icon")
+            Row(verticalAlignment = CenterVertically) {
+                Icon(
+                    imageVector = Icons.Outlined.Tag,
+                    contentDescription = stringResource(R.string.tags_icon_content_description)
+                )
                 Text(
                     text = img.tags,
                     modifier = Modifier.padding(all = 2.dp),

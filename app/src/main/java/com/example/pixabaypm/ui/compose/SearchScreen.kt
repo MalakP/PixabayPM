@@ -88,7 +88,7 @@ fun ErrorMessage(text: String) {
             text = { Text(stringResource(R.string.error_details) + text) },
             confirmButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text(stringResource(R.string.ok).uppercase())
+                    Text(stringResource(android.R.string.ok).uppercase())
                 }
             }
         )
@@ -113,18 +113,17 @@ fun Loading(isVisible: Boolean) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(query: String, viewModel: SharedViewModel) {
-    var text = query
     val focusManager = LocalFocusManager.current
 
     TextField(
-        value = text,
+        value = query,
         onValueChange = { viewModel.onQueryChanged(it) },
         label = { Text(stringResource(R.string.search_tooltip)) },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = {
-            viewModel.searchImages(text)
+            viewModel.searchImages(query)
             focusManager.clearFocus()
         }),
         singleLine = true
@@ -142,10 +141,34 @@ fun PixList(messages: List<PictureModel>, onRowClick: (id: Long) -> Unit) {
 }
 
 @Composable
-fun PixRow(img: PictureModel, onRowClick: (id: Long) -> Unit) {
+fun PixRow(img: PictureModel, onShowDetails: (id: Long) -> Unit) {
+    var itemClicked by remember {
+        mutableStateOf(false)
+    }
+    if (itemClicked) {
+        AlertDialog(
+            onDismissRequest = { itemClicked = false },
+            title = { Text(stringResource(R.string.image_click_popup_title)) },
+            text = { Text(stringResource(R.string.image_click_popup_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    onShowDetails(img.id)
+                    itemClicked = false
+                }) {
+                    Text(stringResource(R.string.yes).uppercase())
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { itemClicked = false }) {
+                    Text(text = stringResource(R.string.no).uppercase())
+                }
+            }
+        )
+
+    }
     Row(modifier = Modifier
         .padding(all = 8.dp)
-        .clickable { onRowClick(img.id) }
+        .clickable { itemClicked = true }
         .fillMaxWidth()) {
 
         AsyncImage(
