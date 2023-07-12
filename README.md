@@ -18,7 +18,8 @@ Android Jetpack,
 Hilt,
 Retrofit2,
 Coil, 
-Moshi
+Moshi, 
+Compose Navigation
 
 Installation:
 
