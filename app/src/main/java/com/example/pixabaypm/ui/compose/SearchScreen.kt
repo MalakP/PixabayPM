@@ -32,7 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,7 +80,7 @@ fun SearchScreen(
 
 @Composable
 fun ErrorMessage(text: String) {
-    var showDialog by remember { mutableStateOf(true) }
+    var showDialog by rememberSaveable { mutableStateOf(true) }
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -142,7 +142,7 @@ fun PixList(messages: List<PictureModel>, onRowClick: (id: Long) -> Unit) {
 
 @Composable
 fun PixRow(img: PictureModel, onShowDetails: (id: Long) -> Unit) {
-    var itemClicked by remember {
+    var itemClicked by rememberSaveable {
         mutableStateOf(false)
     }
     if (itemClicked) {

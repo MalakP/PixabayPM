@@ -5,6 +5,7 @@ import com.example.pixabaypm.data.api.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
 import okhttp3.HttpUrl
@@ -51,7 +52,7 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideCache(ctx: Context) = Cache(ctx.cacheDir, cacheSize)
+    fun provideCache(@ApplicationContext ctx: Context) = Cache(ctx.cacheDir, cacheSize)
 
 
     @Singleton

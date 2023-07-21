@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -50,124 +49,132 @@ import com.example.pixabaypm.ui.theme.PixabayPMTheme
 @Composable
 fun DetailsScreen(viewModel: SharedViewModel, imgId: Long, onBackClick: () -> Unit) {
 
-    val uiState by viewModel.stateFlow.collectAsStateWithLifecycle()
-    val selectedImage = uiState.imagesFetched.first { it.id == imgId }
+    val stateFlow = viewModel.stateFlow.collectAsStateWithLifecycle()
 
-    Content(selectedImage, onBackClick)
+    if (stateFlow.value.imagesFetched.isEmpty()) {
+        viewModel.onInit()
+    }
+
+    Content(stateFlow.value.imagesFetched.firstOrNull { it.id == imgId }, onBackClick)
 
 }
 
 @Composable
-fun Content(img: PictureModel, onBackClick: () -> Unit) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+fun Content(img: PictureModel?, onBackClick: () -> Unit) {
+    img?.let {
+        Surface(modifier = Modifier.fillMaxSize()) {
 
-        val configuration = LocalConfiguration.current
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(img.largeImageUrl)
-                .crossfade(true).build(),
-            contentDescription = img.userName,
-            contentScale = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                ContentScale.FillHeight
-            } else {
-                ContentScale.FillWidth
-            },
+            val configuration = LocalConfiguration.current
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).data(img.largeImageUrl)
+                    .crossfade(true).build(),
+                contentDescription = img.userName,
+                contentScale = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    ContentScale.FillHeight
+                } else {
+                    ContentScale.FillWidth
+                },
 
-            placeholder = painterResource(id = R.drawable.image_512),
-            error = painterResource(id = R.drawable.baseline_broken_image_512)
-        )
-
-        Button(
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.teal_bg)),
-            onClick = { onBackClick() }, modifier = Modifier
-                .padding(all = 8.dp)
-                .wrapContentWidth(align = Alignment.Start)
-                .wrapContentHeight(align = Alignment.Top)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                tint = Color.Black,
-                contentDescription = "Back icon"
+                placeholder = painterResource(id = R.drawable.image_512),
+                error = painterResource(id = R.drawable.baseline_broken_image_512)
             )
-        }
 
-        Column(
-            modifier = Modifier
-                .wrapContentWidth(align = Alignment.End)
-                .wrapContentHeight(align = Alignment.Bottom)
-                .padding(all = 8.dp)
-                .background(colorResource(id = R.color.teal_bg), shape = RoundedCornerShape(20.dp))
-                .padding(all = 10.dp)
-        ) {
-            Row(verticalAlignment = CenterVertically) {
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.teal_bg)),
+                onClick = { onBackClick() }, modifier = Modifier
+                    .padding(all = 8.dp)
+                    .wrapContentWidth(align = Alignment.Start)
+                    .wrapContentHeight(align = Alignment.Top)
+            ) {
                 Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = stringResource(R.string.author_icon_content_description)
-                )
-                Text(
-                    text = img.userName,
-                    modifier = Modifier.padding(all = 2.dp),
-                    style = MaterialTheme.typography.bodyMedium,
+                    imageVector = Icons.Default.ArrowBack,
+                    tint = Color.Black,
+                    contentDescription = "Back icon"
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(verticalAlignment = CenterVertically) {
-                Icon(
-                    imageVector = Icons.Outlined.Tag,
-                    contentDescription = stringResource(R.string.tags_icon_content_description)
-                )
-                Text(
-                    text = img.tags,
-                    modifier = Modifier.padding(all = 2.dp),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(verticalAlignment = CenterVertically) {
-
-                Row(
-                    modifier = Modifier.padding(all = 4.dp),
-                    verticalAlignment = CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ThumbUp,
-                        contentDescription = stringResource(
-                            R.string.likes_icon_content_description
-                        )
+            Column(
+                modifier = Modifier
+                    .wrapContentWidth(align = Alignment.End)
+                    .wrapContentHeight(align = Alignment.Bottom)
+                    .padding(all = 8.dp)
+                    .background(
+                        colorResource(id = R.color.teal_bg),
+                        shape = RoundedCornerShape(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = img.likesNr.toString(),
-
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                    .padding(all = 10.dp)
+            ) {
                 Row(verticalAlignment = CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.Download,
-                        contentDescription = stringResource(R.string.downloads_icon_content_description)
+                        imageVector = Icons.Default.Person,
+                        contentDescription = stringResource(R.string.author_icon_content_description)
                     )
                     Text(
-                        text = img.downloadsNr.toString(),
-                        modifier = Modifier.padding(all = 4.dp),
-                        style = MaterialTheme.typography.bodyMedium
+                        text = img.userName,
+                        modifier = Modifier.padding(all = 2.dp),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.Comment,
-                        contentDescription = stringResource(
-                            R.string.comments_icon_content_description
-                        )
+                        imageVector = Icons.Outlined.Tag,
+                        contentDescription = stringResource(R.string.tags_icon_content_description)
                     )
                     Text(
-                        text = img.downloadsNr.toString(),
+                        text = img.tags,
                         modifier = Modifier.padding(all = 2.dp),
                         style = MaterialTheme.typography.bodyMedium
                     )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(verticalAlignment = CenterVertically) {
+
+                    Row(
+                        modifier = Modifier.padding(all = 4.dp),
+                        verticalAlignment = CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ThumbUp,
+                            contentDescription = stringResource(
+                                R.string.likes_icon_content_description
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = img.likesNr.toString(),
+
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Row(verticalAlignment = CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = stringResource(R.string.downloads_icon_content_description)
+                        )
+                        Text(
+                            text = img.downloadsNr.toString(),
+                            modifier = Modifier.padding(all = 4.dp),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Row(verticalAlignment = CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Comment,
+                            contentDescription = stringResource(
+                                R.string.comments_icon_content_description
+                            )
+                        )
+                        Text(
+                            text = img.downloadsNr.toString(),
+                            modifier = Modifier.padding(all = 2.dp),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
         }

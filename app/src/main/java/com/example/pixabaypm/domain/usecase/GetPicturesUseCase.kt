@@ -6,9 +6,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
-class GetPicturesUseCase(private val repository: PicturesRepository) {
-    fun execute(query: String): Flow<List<PictureModel>> = flow {
+class GetPicturesUseCase @Inject constructor() {
+    @Inject
+    lateinit var repository: PicturesRepository
+    operator fun invoke(query: String): Flow<List<PictureModel>> = flow {
         emit(repository.getPictures(query))
     }.flowOn(Dispatchers.IO)
 }

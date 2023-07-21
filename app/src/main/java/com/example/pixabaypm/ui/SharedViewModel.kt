@@ -1,5 +1,6 @@
 package com.example.pixabaypm.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pixabaypm.domain.usecase.GetPicturesUseCase
@@ -15,26 +16,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(private val getPicturesUseCase: GetPicturesUseCase) :
+class SharedViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
     ViewModel() {
+    @Inject
+    lateinit var getPicturesUseCase: GetPicturesUseCase
 
     private val _stateFlow = MutableStateFlow(SearchScreenState())
     val stateFlow: StateFlow<SearchScreenState> = _stateFlow.asStateFlow()
 
 
     fun onInit() {
-        onQueryChanged("fruits")
+        val query = savedStateHandle.get<String>(QUERY_KEY) ?: INITIAL_QUERY
+        _stateFlow.update { it.copy(query = query) }
         searchImages(stateFlow.value.query)
     }
 
     fun onQueryChanged(query: String) {
         _stateFlow.update { it.copy(query = query) }
+        savedStateHandle[QUERY_KEY] = query
     }
 
     fun searchImages(query: String) {
         viewModelScope.launch {
-            getPicturesUseCase
-                .execute(query)
+            getPicturesUseCase(query)
                 .onStart { _stateFlow.update { it.copy(isLoading = true) } }
                 .onCompletion {
                     _stateFlow.update {
@@ -56,5 +60,10 @@ class SharedViewModel @Inject constructor(private val getPicturesUseCase: GetPic
                 }
 
         }
+    }
+
+    companion object {
+        private const val QUERY_KEY = "query"
+        private const val INITIAL_QUERY = "fruits"
     }
 }
