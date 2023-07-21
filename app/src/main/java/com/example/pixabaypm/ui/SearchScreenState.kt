@@ -10,7 +10,5 @@ data class SearchScreenState(
 
     val error: String = "",
 
-    val initialized: Boolean = false,
-
     val query: String = ""
 )

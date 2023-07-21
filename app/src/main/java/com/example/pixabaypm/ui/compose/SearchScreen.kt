@@ -58,9 +58,6 @@ fun SearchScreen(
     onRowClick: (id: Long) -> Unit
 ) {
     val uiState by searchViewModel.stateFlow.collectAsStateWithLifecycle()
-    if (!uiState.initialized) {
-        searchViewModel.onInit()
-    }
 
     PixabayPMTheme {
         Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {

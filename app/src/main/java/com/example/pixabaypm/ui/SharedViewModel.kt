@@ -16,14 +16,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+class SharedViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val getPicturesUseCase: GetPicturesUseCase
+) :
     ViewModel() {
-    @Inject
-    lateinit var getPicturesUseCase: GetPicturesUseCase
 
     private val _stateFlow = MutableStateFlow(SearchScreenState())
     val stateFlow: StateFlow<SearchScreenState> = _stateFlow.asStateFlow()
 
+    init {
+        onInit()
+    }
 
     fun onInit() {
         val query = savedStateHandle.get<String>(QUERY_KEY) ?: INITIAL_QUERY
@@ -43,8 +47,7 @@ class SharedViewModel @Inject constructor(private val savedStateHandle: SavedSta
                 .onCompletion {
                     _stateFlow.update {
                         it.copy(
-                            isLoading = false,
-                            initialized = true
+                            isLoading = false
                         )
                     }
                 }
