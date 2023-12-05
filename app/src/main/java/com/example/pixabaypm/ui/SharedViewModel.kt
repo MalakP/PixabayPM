@@ -35,12 +35,12 @@ class SharedViewModel @Inject constructor(
         searchImages(stateFlow.value.query)
     }
 
-    fun onQueryChanged(query: String) {
+    private fun onQueryChanged(query: String) {
         _stateFlow.update { it.copy(query = query) }
         savedStateHandle[QUERY_KEY] = query
     }
 
-    fun searchImages(query: String) {
+    private fun searchImages(query: String) {
         viewModelScope.launch {
             getPicturesUseCase(query)
                 .onStart { _stateFlow.update { it.copy(isLoading = true) } }
@@ -61,7 +61,13 @@ class SharedViewModel @Inject constructor(
                 .collect { images ->
                     _stateFlow.update { it.copy(imagesFetched = images, error = "") }
                 }
+        }
+    }
 
+    fun onEvent(event: UIEvent){
+        when(event){
+            is UIEvent.QueryChanged -> onQueryChanged(event.query)
+            is UIEvent.SearchImages -> searchImages(event.query)
         }
     }
 

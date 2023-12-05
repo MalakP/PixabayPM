@@ -34,9 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pixabaypm.R
 import com.example.pixabaypm.domain.model.PictureModel
 import com.example.pixabaypm.ui.SharedViewModel
+import com.example.pixabaypm.ui.UIEvent
 import com.example.pixabaypm.ui.theme.PixabayPMTheme
 
 @Composable
@@ -52,8 +54,8 @@ fun SearchScreen(
             Loading(isVisible = uiState.isLoading)
 
             SearchBar(uiState.query,
-                onQueryChanged = { query -> searchViewModel.onQueryChanged(query) },
-                onSearchImages = { query -> searchViewModel.searchImages(query) })
+                onQueryChanged = { query -> searchViewModel.onEvent(UIEvent.QueryChanged(query)) },
+                onSearchImages = { query -> searchViewModel.onEvent(UIEvent.SearchImages(query)) })
 
             PixList(uiState.imagesFetched, onRowClick)
 
